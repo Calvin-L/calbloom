@@ -18,13 +18,17 @@ int main() {
     // Construct a new Bloom filter with the given parameters.
     int nbuckets = 100000;
     int nhashes = 4;
-    BloomFilter filter(nbuckets, nhashes, generator);
+    calbloom::BloomFilter filter(nbuckets, nhashes, generator);
 
-    filter.add(10);
+    bool isNew = filter.insert(10);
+    assert(isNew);
 
-    assert(!filter.might_contain(9));
-    assert(filter.might_contain(10));
-    assert(!filter.might_contain(11));
+    isNew = filter.insert(10);
+    assert(!isNew);
+
+    assert(!filter.mightContain(9));
+    assert(filter.mightContain(10));
+    assert(!filter.mightContain(11));
 
     return 0;
 }
