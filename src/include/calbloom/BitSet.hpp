@@ -1,6 +1,6 @@
 #pragma once
 
-#include "calbloom/Slab.hpp"
+#include <calbloom/Slab.hpp>
 
 #include <cstddef> // size_t
 #include <climits> // CHAR_BIT

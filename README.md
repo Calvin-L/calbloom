@@ -36,6 +36,10 @@ int main() {
 
 See also: `test/main.cpp`.
 
+This library is built on [caluhash](https://github.com/Calvin-L/caluhash).  See
+the docs there for how to implement hashing for custom types (so that you can
+insert non-integer values).
+
 ## How to include this library in your project
 
 If you use CMake:
@@ -55,6 +59,17 @@ FetchContent_MakeAvailable(calbloom_repo)
 ...
 
 target_link_libraries(YOUR_TARGET_HERE PRIVATE calbloom)
+
+## If you need to hash custom types, you probably need to include caluhash as
+## as well as calbloom.
+#
+# FetchContent_Declare(
+#     caluhash_repo
+#     GIT_REPOSITORY https://github.com/Calvin-L/caluhash.git
+#     GIT_TAG        main)
+# FetchContent_MakeAvailable(caluhash_repo)
+#
+# target_link_libraries(YOUR_TARGET_HERE PRIVATE caluhash)
 ```
 
 Note that you may want to replace `main` with a specific revision for stable
