@@ -2,6 +2,7 @@
 
 #include <caluhash.hpp>
 #include <calbloom/BitSet.hpp>
+#include <calbloom/ConcurrentBitSet.hpp>
 
 #include <cstddef>
 #include <vector>
@@ -9,11 +10,12 @@
 
 namespace calbloom {
 
-class BloomFilter {
+template <class Bits>
+class GenericBloomFilter {
 
 public:
   template <class Rng>
-  BloomFilter(std::size_t m, unsigned k, Rng& sourceOfRandomness);
+  GenericBloomFilter(std::size_t m, unsigned k, Rng& sourceOfRandomness);
 
   template <class T>
   bool insert(const T& x) noexcept;
@@ -24,24 +26,29 @@ public:
 private:
   uint64_t nbits;
   std::vector<caluhash::HashFunction> hashFunctions;
-  BitSet bits;
+  Bits bits;
 
 };
+
+using BloomFilter = GenericBloomFilter<BitSet>;
+using ConcurrentBloomFilter = GenericBloomFilter<ConcurrentBitSet>;
 
 
 // ----------------------------------------------------------------------------
 
 
+template <class Bits>
 template <class Rng>
-BloomFilter::BloomFilter(std::size_t m, unsigned k, Rng& sourceOfRandomness) : nbits(m), bits(m) {
+GenericBloomFilter<Bits>::GenericBloomFilter(std::size_t m, unsigned k, Rng& sourceOfRandomness) : nbits(m), bits(m) {
   hashFunctions.reserve(k);
   for (size_t i = 0; i < k; ++i) {
     hashFunctions.emplace_back(sourceOfRandomness, 64);
   }
 }
 
+template <class Bits>
 template <class T>
-bool BloomFilter::insert(const T& x) noexcept {
+bool GenericBloomFilter<Bits>::insert(const T& x) noexcept {
   bool isNew = false;
 
   for (const auto& h : hashFunctions) {
@@ -53,8 +60,9 @@ bool BloomFilter::insert(const T& x) noexcept {
   return isNew;
 }
 
+template <class Bits>
 template <class T>
-bool BloomFilter::mightContain(const T& x) const noexcept {
+bool GenericBloomFilter<Bits>::mightContain(const T& x) const noexcept {
   for (const auto& h : hashFunctions) {
     uint64_t hash = h(x) % nbits;
     if (!bits.get(hash)) {

@@ -26,6 +26,7 @@ FetchContent_MakeAvailable(caluhash_repo)
 
 set(CALBLOOM_HEADER_FILES
     src/include/calbloom/BitSet.hpp
+    src/include/calbloom/ConcurrentBitSet.hpp
     src/include/calbloom/BloomFilter.hpp
     src/include/calbloom/Slab.hpp)
 add_library(calbloom_objects OBJECT
@@ -38,15 +39,15 @@ add_library(calbloom_static STATIC
 
 target_link_libraries(calbloom_objects PRIVATE caluhash)
 target_include_directories(calbloom_objects PRIVATE src/include)
-target_compile_features(calbloom_objects PRIVATE cxx_std_11) # need <random>
+target_compile_features(calbloom_objects PRIVATE cxx_std_11) # need <random>, <atomic>
 
 target_link_libraries(calbloom PUBLIC caluhash)
 target_include_directories(calbloom PUBLIC src/include)
-target_compile_features(calbloom PUBLIC cxx_std_11) # need <random>
+target_compile_features(calbloom PUBLIC cxx_std_11) # need <random>, <atomic>
 
 target_link_libraries(calbloom_static PUBLIC caluhash)
 target_include_directories(calbloom_static PUBLIC src/include)
-target_compile_features(calbloom_static PUBLIC cxx_std_11) # need <random>
+target_compile_features(calbloom_static PUBLIC cxx_std_11) # need <random>, <atomic>
 
 # -----------------------------------------------------------------------------
 # Testing
